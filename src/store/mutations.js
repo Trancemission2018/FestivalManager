@@ -7,13 +7,13 @@ export default {
     state.currentMap.zoom = zoomLevel
   },
   ADD_POINT(state, latlng) {
-    state.currentMap.activeLine.push(latlng)
+    state.currentMap.addingLine.points.push(latlng)
   },
   TOGGLE_ADDING_LINE(state) {
-    state.currentMap.addingLine = !state.currentMap.addingLine
+    state.currentMap.addingLine.active = true
   },
   CANCEL_ADDING_LINE(state) {
-    state.currentMap.activeLine = []
-    state.currentMap.addingLine = false
+    state.currentMap.addingLine.points = []
+    state.currentMap.addingLine.active = false
   }
 }

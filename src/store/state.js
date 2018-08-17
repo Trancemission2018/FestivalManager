@@ -6,9 +6,13 @@ export default {
       long: 0
     },
     zoom: 5,
-    addingLine: false,
-    activeLine: [],
+    addingLine: {
+      active: false,
+      name: '',
+      type: '',
+      color: '#000',
+      points: [],
+    },
+    lines: [],
   }
-
-
 }
