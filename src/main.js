@@ -13,6 +13,9 @@ Vue.use(Vuetify)
 
 Vue.config.productionTip = false
 
+import VuetifyConfirm from 'vuetify-confirm'
+Vue.use(VuetifyConfirm)
+
 
 /* eslint-disable no-new */
 new Vue({

@@ -6,13 +6,31 @@ export default {
       long: 0
     },
     zoom: 5,
-    addingLine: {
-      active: false,
-      name: '',
-      type: '',
-      color: '#000',
-      points: [],
-    },
     lines: [],
-  }
+    layers: [],
+    activeLayerId: '',
+  },
+  addingLayer: {
+    active: false,
+    layerType: null,
+    points: [],
+    colour: '#000000'
+  },
+  layerTypes: [
+    {
+      id: 1,
+      type: 'Line',
+      component: 'polyline'
+    },
+    {
+      id: 2,
+      type: 'Area',
+      component: 'polygon'
+    },
+    {
+      id: 3,
+      type: 'Marker',
+      component: 'marker'
+    },
+  ],
 }

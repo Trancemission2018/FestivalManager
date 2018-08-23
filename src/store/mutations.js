@@ -6,14 +6,35 @@ export default {
   SET_MAP_ZOOM(state, zoomLevel) {
     state.currentMap.zoom = zoomLevel
   },
-  ADD_POINT(state, latlng) {
-    state.currentMap.addingLine.points.push(latlng)
+  SAVE_LINE(state, lineData) {
+    state.currentMap.lines.push(lineData)
   },
-  TOGGLE_ADDING_LINE(state) {
-    state.currentMap.addingLine.active = true
+  SET_ADDING_LAYER(state) {
+    state.addingLayer.active = true
   },
-  CANCEL_ADDING_LINE(state) {
-    state.currentMap.addingLine.points = []
-    state.currentMap.addingLine.active = false
+  CANCEL_ADDING_LAYER(state) {
+    state.addingLayer.active = false
+    state.addingLayer.points = []
+  },
+  SET_ADDING_LAYER_TYPE(state, layerType) {
+    state.addingLayer.layerType = layerType
+  },
+  ADD_POINT_TO_LAYER(state, point) {
+    state.addingLayer.points.push(point)
+  },
+  UNDO_POINT_TO_LAYER(state) {
+    state.addingLayer.points.pop()
+  },
+  SET_ACTIVE_COLOUR(state, colour) {
+    state.addingLayer.colour = colour
+  },
+  SET_LAYER_NAME(state, layerName) {
+    state.addingLayer.layerName = layerName
+  },
+  SET_ACTIVE_LAYER(state, layerId) {
+    state.currentMap.activeLayerId  = layerId
+  },
+  ADD_LAYERS_TO_MAP(state, layers) {
+    state.currentMap.layers = layers
   }
 }
