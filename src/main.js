@@ -13,6 +13,10 @@ Vue.use(Vuetify)
 
 Vue.config.productionTip = false
 
+import MapHelpers from '../src/mixins/MapHelpers'
+
+Vue.mixin(MapHelpers)
+
 import VuetifyConfirm from 'vuetify-confirm'
 Vue.use(VuetifyConfirm)
 

@@ -75,33 +75,7 @@
       this.loadLayers()
     },
     methods: {
-      addLayer(layerTypeId) { // This really should not be here but hey ho
 
-        let layerDetail = this.$store.getters.layerType(layerTypeId)
-        let componentType = layerDetail.component
-
-        this.$store.dispatch('setAddingLayer')
-        this.$store.dispatch('setAddingLayerType', componentType)
-        this.addingLayer = true
-        console.log('Ah you want to add', componentType)
-      },
-      cancelAddLayer() {
-        this.$store.dispatch('cancelAddingLayer')
-        this.addingLayer = false
-        this.layerName = ''
-      },
-      saveLayer() {
-        console.log('Saving ', this.$store.state.addingLayer)
-        this.$store.dispatch('saveLayer', this.$store.state.addingLayer).then(() => {
-          this.loadLayers()
-          this.$store.dispatch('cancelAddingLayer')
-          this.addingLayer = false
-          this.layerName = ''
-        })
-      },
-      loadLayers() {
-        this.$store.dispatch('loadLayers')
-      },
     },
     watch: {
       layerName(layerName) {
