@@ -15,6 +15,7 @@ export default {
   },
   addingLayer: {
     active: false,
+    section: 0,
     layerType: null,
     points: [],
     colour: '#000000'
@@ -36,17 +37,54 @@ export default {
       component: 'marker'
     },
   ],
-  mapTabs: [
+  sections: [
     {
       name: 'Security',
-      component: 'security'
+      component: 'security',
+      layerColour: '#000000',
+      layerTypes: [
+        {
+          type: 'polyline',
+          name: 'Fence',
+          colour: '#000000'
+        },
+        {
+          type: 'polygon',
+          name: 'Zone',
+          colour: '#000000'
+        },
+        {
+          type: 'marker',
+          name: 'Checkpoint',
+          colour: '#000000'
+        }
+      ]
     },
     {
       name: 'Traffic',
-      component: 'traffic'
+      component: 'traffic',
+      layerColour: '#FFEE58',
+      layerTypes: [
+        {
+          type: 'polyline',
+          name: 'Route',
+          colour: '#000000'
+        },
+        {
+          type: 'polygon',
+          name: 'Car Park',
+          colour: '#000000'
+        },
+        {
+          type: 'marker',
+          name: 'Entrance / Exit',
+          colour: '#000000'
+        }
+      ]
     },
     {
-      name: 'Water'
+      name: 'Water',
+      layerColour: '#03A9F4'
     },
     {
       name: 'Electricity'
@@ -58,4 +96,5 @@ export default {
       name: 'Production'
     },
   ],
+  activeSection: 0
 }

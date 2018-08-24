@@ -24,7 +24,7 @@
 <script>
   import DialogConfirm from "./DialogConfirm"
   export default {
-    name: "list-layers",
+    name: "layers-list",
     components: {DialogConfirm},
     props: [],
     data() {

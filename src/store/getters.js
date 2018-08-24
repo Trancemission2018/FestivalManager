@@ -1,9 +1,15 @@
 export default {
+  activeTab: state => {
+    return state.sections[state.activeTab]
+  },
   layerTypes: state => {
     return state.layerTypes
   },
-  layerType: state => layerTypeId => {
-    return state.layerTypes.find(layerType => layerType.id === layerTypeId)
+  layerType: state => type => {
+    return state.layerTypes.find(layerType => layerType.type === type)
+  },
+  layersByType: state => type => {
+    return state.currentMap.layers.filter(currentLayer => currentLayer.type === type)
   },
   polylines: state => {
     return state.currentMap.layers.filter(layer => layer.data.layerType === 'polyline')

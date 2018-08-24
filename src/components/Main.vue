@@ -12,18 +12,18 @@
                         slider-color="blue"
                 >
                     <v-tab
-                            v-for="tab in $store.state.mapTabs"
-                            :key="tab.name"
+                            v-for="section in $store.state.sections"
+                            :key="section.name"
                             ripple
                     >
-                        {{ tab.name }}
+                        {{ section.name }}
                     </v-tab>
                     <v-tab-item
-                            v-for="tab in $store.state.mapTabs"
-                            :key="tab.name"
+                            v-for="section in $store.state.sections"
+                            :key="section.name"
                     >
                         <v-card flat>
-                            <component :is="tab.component"></component>
+                            <component :is="section.component" :section="section"></component>
                         </v-card>
                     </v-tab-item>
                 </v-tabs>
@@ -48,8 +48,7 @@
     }),
     watch: {
       activeTab() {
-        console.log('tab is now', this.activeTab)
-
+        this.$store.dispatch('setActiveSection', this.activeTab)
       }
     }
   }

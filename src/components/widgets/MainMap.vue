@@ -31,12 +31,8 @@
                     :color="$store.state.addingLayer.colour"
                     :fillColor="$store.state.addingLayer.colour"
             >
-                <l-tooltip
-                        v-if="$store.state.addingLayer.points.length > 3"
-                        :content="$store.state.addingLayer.layerName" :options="tooltipOptions"></l-tooltip>
             </l-polygon>
 
-            <!-- v-for="layer in $store.state.currentMap.layers" -->
             <l-polygon
                     v-for="layer in $store.getters.polygons"
                     :key="layer._id"
@@ -70,11 +66,9 @@
     </div>
 
 </template>
-v-on:keyup.esc="undoPoint"
 <script>
 
   import {LMap, LTileLayer, LMarker, LPolyline, LPolygon, LTooltip, LPopup} from 'vue2-leaflet'
-
 
   export default {
     name: "main-map",
@@ -96,8 +90,8 @@ v-on:keyup.esc="undoPoint"
         },
       }
     },
-    created() {
-
+    mounted() {
+      this.loadLayers()
     },
     computed: {
       mapHeight() {
@@ -147,13 +141,14 @@ v-on:keyup.esc="undoPoint"
   }
 </script>
 
-<style scoped>
+<style>
     @import url('https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.3/leaflet.css'); /* TODO host locally */
 
     .leaflet-tooltip {
         font-weight: bold;
-        background: #ffffff;
+        background: none;
         border: none;
+        box-shadow: none;
     }
 
     .crosshair-cursor-enabled {

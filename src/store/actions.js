@@ -11,6 +11,11 @@ const Api = axios.create({
 
 export default {
 
+  setActiveSection(context, tabId){
+    this.commit('SET_ACTIVE_TAB', tabId)
+    this.commit('SET_SECTION', tabId)
+    this.commit('SET_ACTIVE_SECTION', tabId)
+  },
   setAddingLayer() {
     this.commit('SET_ADDING_LAYER')
   },

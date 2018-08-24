@@ -1,4 +1,13 @@
 export default {
+  SET_ACTIVE_TAB(state, tabId){
+    state.activeTab = tabId
+  },
+  SET_SECTION(state, section){
+    state.addingLayer.section = section
+  },
+  SET_ACTIVE_SECTION(state, section){
+    state.activeSection = section
+  },
   SET_MAP_CENTRE(state, coords) {
     state.currentMap.position.lat = coords.lat
     state.currentMap.position.long = coords.lng

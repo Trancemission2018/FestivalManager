@@ -1,28 +1,20 @@
 export default {
 
   methods: {
-    addLayer(layerTypeId) { // This really should not be here but hey ho
+    addLayer(layerType) {
 
-      let layerDetail = this.$store.getters.layerType(layerTypeId)
-      let componentType = layerDetail.component
+      console.log('And the layer type is ', layerType)
 
       this.$store.dispatch('setAddingLayer')
-      this.$store.dispatch('setAddingLayerType', componentType)
-      this.addingLayer = true
-      console.log('Ah you want to add', componentType)
+      this.$store.dispatch('setAddingLayerType', layerType)
     },
     cancelAddLayer() {
       this.$store.dispatch('cancelAddingLayer')
-      this.addingLayer = false
-      this.layerName = ''
     },
     saveLayer() {
-      console.log('Saving ', this.$store.state.addingLayer)
       this.$store.dispatch('saveLayer', this.$store.state.addingLayer).then(() => {
         this.loadLayers()
         this.$store.dispatch('cancelAddingLayer')
-        this.addingLayer = false
-        this.layerName = ''
       })
     },
     loadLayers() {

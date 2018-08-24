@@ -25,4 +25,9 @@
         -moz-osx-font-smoothing: grayscale;
         color: #2c3e50;
     }
+
+    .active {
+        font-weight: bold;
+        border: 1px solid #000;
+    }
 </style>
