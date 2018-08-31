@@ -11,12 +11,12 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn icon>
-                <v-icon>search</v-icon>
+            <v-btn icon @click="saveMap">
+                <v-icon>save</v-icon>
             </v-btn>
 
-            <v-btn icon>
-                <v-icon>apps</v-icon>
+            <v-btn icon @click="downloadData">
+                <v-icon>cloud_download</v-icon>
             </v-btn>
 
             <v-btn icon>
@@ -32,11 +32,11 @@
                 :style="mapHeight"
                 ref="mainMap"
                 :zoom="14"
-                :center="glasto"
+                :center="$store.state.glasto"
                 @click="mapClick"
         >
 
-            <l-tile-layer :url="$store.state.currentMap.tileUrl"></l-tile-layer>
+            <l-tile-layer :url="$store.state.currentMap.tileUrlSat"></l-tile-layer>
 
             <l-polyline
                     v-if="$store.state.addingLayer.layerType==='polyline'"
@@ -54,10 +54,15 @@
 
             <l-marker
                     v-if="$store.state.addingLayer.layerType==='marker'"
-                    :lat-lng="marker"
+                    :lat-lng="$store.state.addingLayer.markerPoint"
                     :draggable="true"
                     :icon="icon"
+                    @dragend="dragEnd"
             >
+
+                <l-tooltip
+                        :content="`<div class='markerLabel'>${$store.state.addingLayer.layerName}</div>`"
+                        :options="tooltipOptions"></l-tooltip>
             </l-marker>
 
             <l-polygon
@@ -71,7 +76,8 @@
             >
                 <l-tooltip
                         v-if="layer.data.points.length > 3"
-                        :content="`<i class='fas fa-car fa-3x'></i><br />${layer.data.layerName}`"
+                        :icontent="`<i class='fas fa-car fa-3x'></i><br />${layer.data.layerName}`"
+                        :content="`${layer.data.layerName}`"
                         :options="tooltipOptions"></l-tooltip>
             </l-polygon>
             <l-polyline
@@ -95,8 +101,12 @@
                     :lat-lng="layer.data.markerPoint"
                     @click="selectLayer(layer)"
                     :draggable="layer.data.draggable"
-                    :icon="icon"
+                    :icon="iconFromUrl(layer.data.iconUrl)"
             >
+
+                <l-tooltip
+                        :content="`<div class='markerLabel'>${layer.data.layerName}</div>`"
+                        :options="tooltipOptions"></l-tooltip>
             </l-marker>
 
         </l-map>
@@ -144,15 +154,13 @@
       })
     },
     computed: {
+
       icon() {
         return L.icon({
-          // iconUrl: 'https://pbs.twimg.com/profile_images/3349328829/638023434c36eaeba1387e9744a2876f.jpeg',
-          iconUrl: 'https://image.flaticon.com/icons/svg/1051/1051093.svg',
-          // iconUrl: '../../assets/logo.png',mapIcon
+          iconUrl: this.$store.state.addingLayer.iconUrl,
           iconSize: [40, 40],
           iconAnchor: [20, 20]
         })
-
       },
       mapHeight() {
         let windowHeight = window.innerHeight
@@ -179,6 +187,13 @@
       },
     },
     methods: {
+      iconFromUrl(iconUrl) {
+        return L.icon({
+          iconUrl,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20]
+        })
+      },
       selectLayer(layer) {
         layer.data.draggable = true
         this.$store.dispatch('setActiveLayer', layer._id)
@@ -191,11 +206,6 @@
       mapClick(event) {
         switch (this.$store.state.addingLayer.layerType) {
           case 'marker':
-            if (!this.addedMarker) {
-              this.marker = event.latlng
-            }else{
-              this.addedMarker = true
-            }
             this.$store.dispatch('setMarkerPoint', event.latlng)
             break
           default:
@@ -207,28 +217,21 @@
             }
         }
       },
-      getCentre(arr) {
-        let twoTimesSignedArea = 0
-        let cxTimes6SignedArea = 0
-        let cyTimes6SignedArea = 0
+      dragEnd(e) {
+        this.$store.dispatch('setMarkerPoint', e.target._latlng)
+      },
+      downloadData() {
 
-        let length = arr.length
+        let dataStr = JSON.stringify(this.$store.state);
+        let encodedUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 
-        let x = function (i) {
-          return arr[i % length][0]
-        }
-        let y = function (i) {
-          return arr[i % length][1]
-        }
-
-        for (let i = 0; i < arr.length; i++) {
-          let twoSA = x(i) * y(i + 1) - x(i + 1) * y(i)
-          twoTimesSignedArea += twoSA
-          cxTimes6SignedArea += (x(i) + x(i + 1)) * twoSA
-          cyTimes6SignedArea += (y(i) + y(i + 1)) * twoSA
-        }
-        let sixSignedArea = 3 * twoTimesSignedArea
-        return [cxTimes6SignedArea / sixSignedArea, cyTimes6SignedArea / sixSignedArea]
+        let link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "data.json");
+        link.innerHTML= "Click Here to download";
+        document.body.appendChild(link); // Required for FF
+        link.click();
+        link.remove()
       }
     },
     watch: {
@@ -258,6 +261,10 @@
 
     .crosshair-cursor-enabled {
         cursor: crosshair;
+    }
+
+    .markerLabel {
+        margin-top: 62px;
     }
 
 </style>

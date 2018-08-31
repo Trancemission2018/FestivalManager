@@ -1,0 +1,245 @@
+{
+  "currentMap": {
+    "position": {
+      "lat": 0,
+      "long": 0
+    },
+    "tileUrl": "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
+    "tileUrlOSM": "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
+    "tileUrlSat": "http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+    "zoom": 5,
+    "lines": [],
+    "layers": [
+      {
+        "_id": "hstn",
+        "data": {
+          "active": true,
+          "section": 0,
+          "layerType": "marker",
+          "layerName": "Pyramid Stage",
+          "points": [],
+          "iconUrl": "https://image.flaticon.com/icons/svg/1051/1051093.svg",
+          "markerPoint": {
+            "lat": 51.15554788573277,
+            "lng": -2.5863575935363774
+          },
+          "colour": "#000000",
+          "draggable": false
+        }
+      },
+      {
+        "_id": "xfdcrlk",
+        "data": {
+          "active": true,
+          "section": 0,
+          "layerType": "marker",
+          "layerName": "Park Stage",
+          "points": [],
+          "iconUrl": "https://image.flaticon.com/icons/svg/1051/1051093.svg",
+          "markerPoint": {
+            "lat": 51.14615967641185,
+            "lng": -2.5909924507141118
+          },
+          "colour": "#000000",
+          "draggable": false
+        }
+      },
+      {
+        "_id": "edwrqq",
+        "data": {
+          "active": true,
+          "section": 0,
+          "layerType": "marker",
+          "layerName": "Bushy Ground",
+          "points": [],
+          "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Legenda_pole_namiotowe.svg/1000px-Legenda_pole_namiotowe.svg.png",
+          "markerPoint": {
+            "lat": 51.15423567022531,
+            "lng": -2.597923278808594
+          },
+          "colour": "#000000",
+          "draggable": false
+        }
+      },
+      {
+        "_id": "kdjf",
+        "data": {
+          "active": true,
+          "section": 0,
+          "layerType": "polygon",
+          "layerName": "Pyramid Field",
+          "points": [
+            {
+              "lat": 51.155480593537646,
+              "lng": -2.5867331027984624
+            },
+            {
+              "lat": 51.155897803565495,
+              "lng": -2.5873553752899174
+            },
+            {
+              "lat": 51.156409217162825,
+              "lng": -2.5857567787170415
+            },
+            {
+              "lat": 51.15634865532221,
+              "lng": -2.5854778289794926
+            },
+            {
+              "lat": 51.15689370902617,
+              "lng": -2.5845015048980717
+            },
+            {
+              "lat": 51.15612659455976,
+              "lng": -2.5814652442932133
+            },
+            {
+              "lat": 51.155070109022034,
+              "lng": -2.583192586898804
+            },
+            {
+              "lat": 51.15462597412155,
+              "lng": -2.5843298435211186
+            },
+            {
+              "lat": 51.154767290235405,
+              "lng": -2.5853812694549565
+            }
+          ],
+          "iconUrl": "https://image.flaticon.com/icons/svg/1051/1051093.svg",
+          "markerPoint": {
+            "lat": 51.15271479940974,
+            "lng": -2.6097464561462402
+          },
+          "colour": "#cfe92c",
+          "draggable": false
+        }
+      }
+    ],
+    "activeLayerId": ""
+  },
+  "glasto": {
+    "lat": 51.16287541851542,
+    "lng": -2.5935459136962895
+  },
+  "addingLayer": {
+    "active": false,
+    "section": 0,
+    "layerType": null,
+    "layerName": "",
+    "points": [],
+    "iconUrl": "https://image.flaticon.com/icons/svg/1051/1051093.svg",
+    "markerPoint": {
+      "lat": 51.15271479940974,
+      "lng": -2.6097464561462402
+    },
+    "colour": "#000000",
+    "draggable": false
+  },
+  "layerTypes": [
+    {
+      "id": 1,
+      "type": "Line",
+      "component": "polyline"
+    },
+    {
+      "id": 2,
+      "type": "Area",
+      "component": "polygon"
+    },
+    {
+      "id": 3,
+      "type": "Marker",
+      "component": "marker"
+    }
+  ],
+  "sections": [
+    {
+      "name": "Security",
+      "component": "security",
+      "layerColour": "#000000",
+      "layerTypes": [
+        {
+          "type": "polyline",
+          "name": "Fence",
+          "colour": "#000000"
+        },
+        {
+          "type": "polygon",
+          "name": "Zone",
+          "colour": "#000000"
+        },
+        {
+          "type": "marker",
+          "name": "Checkpoint",
+          "colour": "#000000"
+        }
+      ]
+    },
+    {
+      "name": "Traffic",
+      "component": "traffic",
+      "layerColour": "#FFEE58",
+      "layerTypes": [
+        {
+          "type": "polyline",
+          "name": "Route",
+          "colour": "#000000"
+        },
+        {
+          "type": "polygon",
+          "name": "Car Park",
+          "colour": "#000000"
+        },
+        {
+          "type": "marker",
+          "name": "Entrance / Exit",
+          "colour": "#000000"
+        }
+      ]
+    },
+    {
+      "name": "Water",
+      "layerColour": "#03A9F4"
+    },
+    {
+      "name": "Electricity"
+    },
+    {
+      "name": "Stages"
+    },
+    {
+      "name": "Production"
+    }
+  ],
+  "activeSection": 0,
+  "mapIcons": [
+    {
+      "name": "Stage",
+      "url": "https://image.flaticon.com/icons/svg/1051/1051093.svg"
+    },
+    {
+      "name": "Campsite",
+      "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Legenda_pole_namiotowe.svg/1000px-Legenda_pole_namiotowe.svg.png"
+    }
+  ],
+  "route": {
+    "name": "MainMap",
+    "path": "/",
+    "hash": "",
+    "query": {},
+    "params": {},
+    "fullPath": "/",
+    "meta": {},
+    "from": {
+      "name": null,
+      "path": "/",
+      "hash": "",
+      "query": {},
+      "params": {},
+      "fullPath": "/",
+      "meta": {}
+    }
+  },
+  "activeTab": 0
+}

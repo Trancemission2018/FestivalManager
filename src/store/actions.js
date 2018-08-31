@@ -40,6 +40,9 @@ export default {
   setLayerName(context, layerName) {
     this.commit('SET_LAYER_NAME', layerName)
   },
+  setIconUrl(context, iconUrl) {
+    this.commit('SET_ICON_URL', iconUrl)
+  },
   setActiveLayer(context, layerId) {
     console.log('Setting layer', layerId)
     this.commit('SET_ACTIVE_LAYER', layerId)

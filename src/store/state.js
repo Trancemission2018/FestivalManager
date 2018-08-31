@@ -7,18 +7,27 @@ export default {
     },
     tileUrl: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png', // This has the fields innit!!!!!!!
     tileUrlOSM: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png', // This has the fields innit!!!!!!!
-    currentSat: 'http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+    tileUrlSat: 'http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
     zoom: 5,
     lines: [],
     layers: [],
     activeLayerId: '',
   },
+  glasto: {
+    lat: 51.15271479940974,
+    lng: -2.6097464561462402
+  },
   addingLayer: { // TODO - This is default - move to config.
     active: false,
     section: 2,
     layerType: null,
+    layerName: '',
     points: [],
-    markerPoint: {},
+    iconUrl: 'https://image.flaticon.com/icons/svg/1051/1051093.svg',
+    markerPoint: {
+      lat: 51.15271479940974,
+      lng: -2.6097464561462402
+    },
     colour: '#000000',
     draggable: false
   },
@@ -98,5 +107,15 @@ export default {
       name: 'Production'
     },
   ],
-  activeSection: 0
+  activeSection: 0,
+  mapIcons: [
+    {
+      name: 'Stage',
+      url: 'https://image.flaticon.com/icons/svg/1051/1051093.svg'
+    },
+    {
+      name: 'Campsite',
+      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Legenda_pole_namiotowe.svg/1000px-Legenda_pole_namiotowe.svg.png'
+    }
+  ]
 }
