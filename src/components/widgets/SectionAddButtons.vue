@@ -2,7 +2,8 @@
     <v-toolbar dense class="mt-2">
         <v-btn
                 small
-                v-for="layerType in section.layerTypes"
+                v-for="(layerType, idx) in section.layerTypes"
+                :key="idx"
                 @click="addLayer(layerType.type)">
             Add {{layerType.name }}
         </v-btn>

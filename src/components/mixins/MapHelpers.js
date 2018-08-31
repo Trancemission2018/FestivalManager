@@ -3,6 +3,8 @@ export default {
 
     getCentre(polygon) {
 
+      // TODO implement this
+
       let twoTimesSignedArea = 0
       let cxTimes6SignedArea = 0
       let cyTimes6SignedArea = 0

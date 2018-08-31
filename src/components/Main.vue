@@ -29,6 +29,11 @@
                 </v-tabs>
             </v-flex>
         </v-layout>
+        <v-layout>
+            <v-flex>
+                <v-btn @click="saveAll">Save All</v-btn>
+            </v-flex>
+        </v-layout>
     </div>
 </template>
 <script>
@@ -49,6 +54,13 @@
     watch: {
       activeTab() {
         this.$store.dispatch('setActiveSection', this.activeTab)
+      }
+    },
+    methods: {
+      saveAll() {
+        this.$refs.mainMap.mapObject.eachLayer(layer => {
+          console.log('Please save this layer', layer)
+        })
       }
     }
   }

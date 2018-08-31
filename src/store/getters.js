@@ -16,5 +16,8 @@ export default {
   },
   polygons: state => {
     return state.currentMap.layers.filter(layer => layer.data.layerType === 'polygon')
-  }
+  },
+  markers: state => {
+    return state.currentMap.layers.filter(layer => layer.data.layerType === 'marker')
+  },
 }

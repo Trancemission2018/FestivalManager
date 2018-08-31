@@ -31,6 +31,9 @@ export default {
   ADD_POINT_TO_LAYER(state, point) {
     state.addingLayer.points.push(point)
   },
+  SET_MARKER_POINT(state, point) {
+    state.addingLayer.markerPoint = point
+  },
   UNDO_POINT_TO_LAYER(state) {
     state.addingLayer.points.pop()
   },

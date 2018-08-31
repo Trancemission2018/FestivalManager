@@ -11,7 +11,7 @@ const Api = axios.create({
 
 export default {
 
-  setActiveSection(context, tabId){
+  setActiveSection(context, tabId) {
     this.commit('SET_ACTIVE_TAB', tabId)
     this.commit('SET_SECTION', tabId)
     this.commit('SET_ACTIVE_SECTION', tabId)
@@ -28,6 +28,9 @@ export default {
   addPointToLayer(context, point) {
     this.commit('ADD_POINT_TO_LAYER', point)
   },
+  setMarkerPoint(context, point) {
+    this.commit('SET_MARKER_POINT', point)
+  },
   undoPointToLayer(context) {
     this.commit('UNDO_POINT_TO_LAYER')
   },
@@ -42,26 +45,37 @@ export default {
     this.commit('SET_ACTIVE_LAYER', layerId)
   },
   loadLayers() {
-    Api.get('/layers').then(response => {
-      this.commit('ADD_LAYERS_TO_MAP', response.data)
-    })
+
+    let savedLayers = localStorage.getItem('layers')
+    let layersData = []
+    if (savedLayers) {
+      layersData = JSON.parse(savedLayers)
+    }
+    this.commit('ADD_LAYERS_TO_MAP', layersData)
 
   },
-  saveLayer(context, layerData) {
-    return new Promise((resolve, reject) => {
-      Api.post('/layer', layerData).then(response => {
-        resolve(response)
-        console.log('Response:', response)
-      }).catch(error => reject(error))
+  saveLayer({context, dispatch}, layerData) {
+
+    let savedLayers = localStorage.getItem('layers')
+    let layersData = []
+    if (savedLayers) {
+      layersData = JSON.parse(savedLayers)
+    }
+    layersData.push({
+      _id: Math.random().toString(36).replace(/[^a-z]+/g, '').substr(2, 16),
+      data: layerData
     })
+    localStorage.setItem('layers', JSON.stringify(layersData))
+    dispatch('loadLayers')
   },
-  deleteLayer({context, dispatch} , layerData) {
-    return new Promise((resolve, reject) => {
-      Api.delete(`/layer/${layerData._id}`).then(response => {
-        dispatch('loadLayers')
-        console.log('Response:', response)
-        resolve(response)
-      }).catch(error => reject(error))
-    })
+  deleteLayer({context, dispatch}, layerData) {
+
+    let currentLayers = JSON.parse(localStorage.getItem('layers'))
+    let savedLayers = []
+    if (currentLayers) {
+      savedLayers = currentLayers.filter(layer => layer._id !== layerData._id)
+    }
+    localStorage.setItem('layers', JSON.stringify(savedLayers))
+    dispatch('loadLayers')
   }
 }

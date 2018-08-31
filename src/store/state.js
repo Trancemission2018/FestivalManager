@@ -13,12 +13,14 @@ export default {
     layers: [],
     activeLayerId: '',
   },
-  addingLayer: {
+  addingLayer: { // TODO - This is default - move to config.
     active: false,
-    section: 0,
+    section: 2,
     layerType: null,
     points: [],
-    colour: '#000000'
+    markerPoint: {},
+    colour: '#000000',
+    draggable: false
   },
   layerTypes: [
     {
