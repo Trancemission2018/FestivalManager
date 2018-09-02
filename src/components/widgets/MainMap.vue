@@ -11,16 +11,16 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn icon @click="saveMap">
-                <v-icon>save</v-icon>
+            <v-btn icon @click="changeTile">
+                <v-icon>map</v-icon>
             </v-btn>
 
             <v-btn icon @click="downloadData">
                 <v-icon>cloud_download</v-icon>
             </v-btn>
 
-            <v-btn icon>
-                <v-icon>refresh</v-icon>
+            <v-btn icon @click="exportLayers">
+                <v-icon>import_export</v-icon>
             </v-btn>
 
             <v-btn icon>
@@ -34,14 +34,16 @@
                 :zoom="14"
                 :center="$store.state.glasto"
                 @click="mapClick"
+                @mousemove="mouseMove"
         >
 
-            <l-tile-layer :url="$store.state.currentMap.tileUrlSat"></l-tile-layer>
+            <l-tile-layer :url="activeTileLayer"></l-tile-layer>
 
             <l-polyline
                     v-if="$store.state.addingLayer.layerType==='polyline'"
                     :lat-lngs="$store.state.addingLayer.points"
                     :color="$store.state.addingLayer.colour"
+                    :weight="$store.state.addingLayer.strokeWidth"
             />
 
             <l-polygon
@@ -49,6 +51,7 @@
                     :lat-lngs="$store.state.addingLayer.points"
                     :color="$store.state.addingLayer.colour"
                     :fillColor="$store.state.addingLayer.colour"
+                    :weight="$store.state.addingLayer.strokeWidth"
             >
             </l-polygon>
 
@@ -72,7 +75,7 @@
                     :color="layer.data.colour"
                     :fillColor="layer.data.colour"
                     @click="selectLayer(layer)"
-                    :weight="3"
+                    :weight="1"
             >
                 <l-tooltip
                         v-if="layer.data.points.length > 3"
@@ -87,12 +90,15 @@
                     :color="layer.data.colour"
                     :fillColor="layer.data.colour"
                     @click="selectLayer(layer)"
-                    :weight="1"
+                    :weight="3"
+                    :iweight="layer.data.strokeWidth"
             >
+                <!--
                 <l-tooltip
                         v-if="layer.data.points.length > 2"
                         :content="layer.data.layerName"
                         :options="tooltipOptions"></l-tooltip>
+                        -->
             </l-polyline>
 
             <l-marker
@@ -116,6 +122,7 @@
 <script>
 
   import {LMap, LTileLayer, LMarker, LPolyline, LPolygon, LTooltip, LPopup, LIconDefault} from 'vue2-leaflet'
+  import axios from 'axios'
 
   export default {
     name: "main-map",
@@ -155,6 +162,11 @@
     },
     computed: {
 
+      activeTileLayer() {
+
+        return this.$store.state.currentMap.tileLayers[this.$store.state.currentMap.activeTile]
+
+      },
       icon() {
         return L.icon({
           iconUrl: this.$store.state.addingLayer.iconUrl,
@@ -166,25 +178,6 @@
         let windowHeight = window.innerHeight
         return `height: ${windowHeight}px`
       },
-      mapCentre() {
-        if (localStorage.getItem('mapCentre')) {
-          // TODO move to db?
-          let coords = JSON.parse(localStorage.getItem('mapCentre'))
-          return L.latLng(coords.lat, coords.lng)
-        }
-      },
-      currentZoom() {
-        if (localStorage.getItem('mapZoom')) {
-          return JSON.parse(localStorage.getItem('mapZoom'))
-        }
-      },
-      iconTest() {
-        return L.icon({
-          iconUrl: 'https://avatars0.githubusercontent.com/u/3602272?s=88&v=4',
-          iconSize: [40, 40],
-          iconAnchor: [20, 20]
-        })
-      },
     },
     methods: {
       iconFromUrl(iconUrl) {
@@ -194,11 +187,18 @@
           iconAnchor: [20, 20]
         })
       },
+      changeTile() {
+
+        if (this.$store.state.currentMap.activeTile === this.$store.state.currentMap.tileLayers.length - 1) {
+          this.$store.commit('SET_TILE_LAYER', 0)
+        } else {
+          let layer = this.$store.state.currentMap.activeTile + 1
+          this.$store.commit('SET_TILE_LAYER', layer)
+        }
+      },
       selectLayer(layer) {
         layer.data.draggable = true
         this.$store.dispatch('setActiveLayer', layer._id)
-      },
-      polygonCentre(coords) {
       },
       undoPoint(event) {
         this.$store.dispatch('undoPointToLayer', event.latlng)
@@ -217,21 +217,48 @@
             }
         }
       },
+      mouseMove(event) {
+
+        return
+        if (this.$store.state.addingLayer.points.length > 1) {
+
+          switch (this.$store.state.addingLayer.layerType) {
+            case 'marker':
+              this.$store.dispatch('setMarkerPoint', event.latlng)
+              break
+            default:
+
+              switch (this.$store.state.addingLayer.active) {
+                case true:
+                  this.$store.dispatch('addPointToLayer', event.latlng)
+                  break
+              }
+          }
+        }
+      },
       dragEnd(e) {
         this.$store.dispatch('setMarkerPoint', e.target._latlng)
       },
       downloadData() {
-
-        let dataStr = JSON.stringify(this.$store.state);
-        let encodedUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-
-        let link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "data.json");
-        link.innerHTML= "Click Here to download";
-        document.body.appendChild(link); // Required for FF
-        link.click();
+        let dataStr = JSON.stringify(this.$store.state)
+        let encodedUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
+        let link = document.createElement("a")
+        link.setAttribute("href", encodedUri)
+        link.setAttribute("download", "data.json")
+        link.innerHTML = "Click Here to download"
+        document.body.appendChild(link) // Required for FF
+        link.click()
         link.remove()
+      },
+      exportLayers(){
+        this.$store.state.currentMap.layers.map(layer => {
+          console.log('Exporting Layer', layer.data)
+          axios.post('http://localhost:6969/layer', layer.data).then(response => {
+            console.log('Saved layer', response)
+          })
+
+        })
+
       }
     },
     watch: {

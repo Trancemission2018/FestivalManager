@@ -8,6 +8,12 @@ export default {
     tileUrl: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png', // This has the fields innit!!!!!!!
     tileUrlOSM: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png', // This has the fields innit!!!!!!!
     tileUrlSat: 'http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+    tileLayers: [
+      'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      'http://mt0.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
+      ''
+    ],
+    activeTile: 0,
     zoom: 5,
     lines: [],
     layers: [],
@@ -19,7 +25,7 @@ export default {
   },
   addingLayer: { // TODO - This is default - move to config.
     active: false,
-    section: 2,
+    section: 0,
     layerType: null,
     layerName: '',
     points: [],
@@ -29,6 +35,7 @@ export default {
       lng: -2.6097464561462402
     },
     colour: '#000000',
+    strokeWidth: 3,
     draggable: false
   },
   layerTypes: [
@@ -79,23 +86,31 @@ export default {
         {
           type: 'polyline',
           name: 'Route',
-          colour: '#000000'
         },
         {
           type: 'polygon',
           name: 'Car Park',
-          colour: '#000000'
         },
         {
           type: 'marker',
           name: 'Entrance / Exit',
-          colour: '#000000'
         }
       ]
     },
     {
-      name: 'Water',
-      layerColour: '#03A9F4'
+      name: 'Camping',
+      layerColour: '#03A9F4',
+      component: 'camping',
+      layerTypes: [
+        {
+          type: 'polygon',
+          name: 'Public/Pre Booked Camping',
+        },
+        {
+          type: 'polygon',
+          name: 'Staff Camping',
+        },
+      ]
     },
     {
       name: 'Electricity'
@@ -111,11 +126,17 @@ export default {
   mapIcons: [
     {
       name: 'Stage',
-      url: 'https://image.flaticon.com/icons/svg/1051/1051093.svg'
+      url: '/static/icons/stage.svg'
     },
     {
       name: 'Campsite',
-      url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Legenda_pole_namiotowe.svg/1000px-Legenda_pole_namiotowe.svg.png'
-    }
+      url: '/static/icons/camping.svg'
+    },
+    {
+      name: 'Car',
+      url: '/static/icons/car-entrance.svg'
+    },
+  ],
+  colourPresets: [
   ]
 }

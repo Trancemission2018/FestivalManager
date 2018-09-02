@@ -2,7 +2,7 @@
 
     <div grid-list-md>
         <v-layout row wrap align-center
-                  v-for="(layer, id) in $store.state.currentMap.layers"
+                  v-for="(layer, id) in $store.getters.layersBySection()"
                   :class="{'teal' : layer._id === $store.state.currentMap.activeLayerId}"
                   :key="id._id"
                   @click=""
@@ -23,6 +23,7 @@
 
 <script>
   import DialogConfirm from "./DialogConfirm"
+
   export default {
     name: "layers-list",
     components: {DialogConfirm},
@@ -35,7 +36,7 @@
     },
     methods: {
       deleteLayer(layer) {
-        if(confirm(`Are you sure you wish to delete ${layer.data.layerName}?`)){
+        if (confirm(`Are you sure you wish to delete ${layer.data.layerName}?`)) {
           this.$store.dispatch('deleteLayer', layer).then(response => {
 
           })
@@ -46,5 +47,6 @@
 </script>
 
 <style scoped>
+
 
 </style>

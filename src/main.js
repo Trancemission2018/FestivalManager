@@ -13,6 +13,8 @@ Vue.use(Vuetify)
 
 Vue.config.productionTip = false
 
+require('vue2-animate/dist/vue2-animate.min.css')
+
 import MapHelpers from '../src/mixins/MapHelpers'
 
 Vue.mixin(MapHelpers)

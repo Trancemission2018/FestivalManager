@@ -4,6 +4,7 @@
                 small
                 v-for="(layerType, idx) in section.layerTypes"
                 :key="idx"
+
                 @click="addLayer(layerType.type)">
             Add {{layerType.name }}
         </v-btn>

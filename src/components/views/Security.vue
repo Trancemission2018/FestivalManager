@@ -1,7 +1,6 @@
 <template>
     <div>
         <v-card
-                color="grey lighten-4"
                 flat
                 tile
         >
@@ -27,7 +26,6 @@
     components: {SectionAddButtons, LayerAdd, LayersList},
     props: ['section'],
     mounted() {
-      console.log('Hello section', this.section)
     },
     methods: {},
   }

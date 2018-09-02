@@ -25,6 +25,12 @@ MongoClient.connect(dbUrl, function (err, client) {
 
   const db = client.db(dbName)
 
+  app.post('/layers/import', (req, res) => {
+    req.body.layers.map(layer => {
+      db.collection('layers').insert({data:layer.data})
+    })
+  })
+
   app.get('/layers', (req, res) => {
     console.log('Fetching layers')
     db.collection('layers').find().toArray().then(layers => res.json(layers))

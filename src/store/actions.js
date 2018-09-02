@@ -37,6 +37,9 @@ export default {
   setActiveColour(context, colour) {
     this.commit('SET_ACTIVE_COLOUR', colour)
   },
+  setStrokeWidth(context, width) {
+    this.commit('SET_STROKE_WIDTH', width)
+  },
   setLayerName(context, layerName) {
     this.commit('SET_LAYER_NAME', layerName)
   },
@@ -44,18 +47,23 @@ export default {
     this.commit('SET_ICON_URL', iconUrl)
   },
   setActiveLayer(context, layerId) {
-    console.log('Setting layer', layerId)
     this.commit('SET_ACTIVE_LAYER', layerId)
+  },
+  setPresetColours(context, colours) {
+    this.commit('SET_PRESET_COLOURS', colours)
+  },
+  addPresetColour(context, colour) {
+    return new Promise((resolve) => {
+      this.commit('ADD_PRESET_COLOUR', colour)
+      resolve()
+    })
   },
   loadLayers() {
 
-    let savedLayers = localStorage.getItem('layers')
-    let layersData = []
-    if (savedLayers) {
-      layersData = JSON.parse(savedLayers)
-    }
-    this.commit('ADD_LAYERS_TO_MAP', layersData)
-
+    Api.get('/layers').then(response => {
+      console.log('Load these layers now', response)
+      this.commit('ADD_LAYERS_TO_MAP', response.data)
+    })
   },
   saveLayer({context, dispatch}, layerData) {
 

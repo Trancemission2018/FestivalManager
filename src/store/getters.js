@@ -8,8 +8,8 @@ export default {
   layerType: state => type => {
     return state.layerTypes.find(layerType => layerType.type === type)
   },
-  layersByType: state => type => {
-    return state.currentMap.layers.filter(currentLayer => currentLayer.type === type)
+  layersBySection: state => section => {
+    return state.currentMap.layers.filter(currentLayer => currentLayer.data.section === state.activeSection)
   },
   polylines: state => {
     return state.currentMap.layers.filter(layer => layer.data.layerType === 'polyline')

@@ -67,7 +67,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [ 'style-loader', 'css-loader' ]   //  <=  Order is very important
+        use: [ 'style-loader' ]   //  <=  Order is very important
       }
     ]
   },

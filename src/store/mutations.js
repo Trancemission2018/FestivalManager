@@ -1,25 +1,21 @@
 export default {
-  SET_ACTIVE_TAB(state, tabId){
+  SET_ACTIVE_TAB(state, tabId) {
     state.activeTab = tabId
   },
-  SET_SECTION(state, section){
+  SET_SECTION(state, section) {
     state.addingLayer.section = section
   },
-  SET_ACTIVE_SECTION(state, section){
+  SET_ACTIVE_SECTION(state, section) {
     state.activeSection = section
   },
-  SET_MAP_CENTRE(state, coords) {
-    state.currentMap.position.lat = coords.lat
-    state.currentMap.position.long = coords.lng
-  },
-  SET_MAP_ZOOM(state, zoomLevel) {
-    state.currentMap.zoom = zoomLevel
-  },
-  SAVE_LINE(state, lineData) {
-    state.currentMap.lines.push(lineData)
+  SET_TILE_LAYER(state, tileId) {
+    state.currentMap.activeTile = tileId
   },
   SET_ADDING_LAYER(state) {
     state.addingLayer.active = true
+  },
+  SET_STROKE_WIDTH(state, width) {
+    state.addingLayer.strokeWidth = width
   },
   CANCEL_ADDING_LAYER(state) {
     state.addingLayer.active = false
@@ -47,9 +43,15 @@ export default {
     state.addingLayer.layerName = layerName
   },
   SET_ACTIVE_LAYER(state, layerId) {
-    state.currentMap.activeLayerId  = layerId
+    state.currentMap.activeLayerId = layerId
   },
   ADD_LAYERS_TO_MAP(state, layers) {
     state.currentMap.layers = layers
+  },
+  SET_PRESET_COLOURS(state, colours) {
+    state.colourPresets = (colours)
+  },
+  ADD_PRESET_COLOUR(state, colour) {
+    state.colourPresets.push(colour)
   }
 }
