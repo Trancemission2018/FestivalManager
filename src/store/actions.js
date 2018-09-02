@@ -21,6 +21,7 @@ export default {
   },
   cancelAddingLayer() {
     this.commit('CANCEL_ADDING_LAYER')
+    this.commit('CANCEL_EDITING_LAYER')
   },
   setAddingLayerType(context, layerType) {
     this.commit('SET_ADDING_LAYER_TYPE', layerType)
@@ -47,7 +48,11 @@ export default {
     this.commit('SET_ICON_URL', iconUrl)
   },
   setActiveLayer(context, layerId) {
-    this.commit('SET_ACTIVE_LAYER', layerId)
+    this.commit('SET_EDITING_LAYER')
+    return new Promise(resolve => {
+      this.commit('SET_ACTIVE_LAYER', layerId)
+      resolve()
+    })
   },
   setPresetColours(context, colours) {
     this.commit('SET_PRESET_COLOURS', colours)
@@ -60,6 +65,15 @@ export default {
   },
   loadLayers() {
 
+    /*
+    let savedLayers = localStorage.getItem('layers')
+    let layersData = []
+    if (savedLayers) {
+      layersData = JSON.parse(savedLayers)
+    }
+    this.commit('ADD_LAYERS_TO_MAP', layersData)
+    */
+
     Api.get('/layers').then(response => {
       console.log('Load these layers now', response)
       this.commit('ADD_LAYERS_TO_MAP', response.data)
@@ -67,6 +81,10 @@ export default {
   },
   saveLayer({context, dispatch}, layerData) {
 
+    Api.post('/layer', layerData).then(response => {
+      console.log('Saved', response)
+      dispatch('loadLayers')
+    })
     let savedLayers = localStorage.getItem('layers')
     let layersData = []
     if (savedLayers) {
@@ -79,7 +97,20 @@ export default {
     localStorage.setItem('layers', JSON.stringify(layersData))
     dispatch('loadLayers')
   },
+  updateLayer({context, dispatch}, layerData) {
+    Api.put('/layer', layerData).then(response => {
+      console.log('Saved', response)
+      dispatch('loadLayers')
+    })
+  },
   deleteLayer({context, dispatch}, layerData) {
+
+    return new Promise((resolve, reject) => {
+      Api.delete(`/layer/${layerData.id}`).then(() => {
+        dispatch('loadLayers')
+        resolve()
+      })
+    })
 
     let currentLayers = JSON.parse(localStorage.getItem('layers'))
     let savedLayers = []

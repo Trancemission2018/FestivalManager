@@ -14,6 +14,12 @@ export default {
   SET_ADDING_LAYER(state) {
     state.addingLayer.active = true
   },
+  SET_EDITING_LAYER(state) {
+    state.editingLayer.active = true
+  },
+  CANCEL_EDITING_LAYER(state) {
+    state.editingLayer.active = false
+  },
   SET_STROKE_WIDTH(state, width) {
     state.addingLayer.strokeWidth = width
   },

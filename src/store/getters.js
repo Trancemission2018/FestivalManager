@@ -20,4 +20,16 @@ export default {
   markers: state => {
     return state.currentMap.layers.filter(layer => layer.data.layerType === 'marker')
   },
+  strokeWeight: state => layer => {
+    if (layer._id === state.currentMap.activeLayerId) {
+      return 5
+    }
+    return 1
+  },
+  strokeWeightPath: state => layer => {
+    if (layer._id === state.currentMap.activeLayerId) {
+      return 5
+    }
+    return 3
+  }
 }

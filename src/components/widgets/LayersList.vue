@@ -3,15 +3,19 @@
     <div grid-list-md>
         <v-layout row wrap align-center
                   v-for="(layer, id) in $store.getters.layersBySection()"
+                  class="pa-1"
                   :class="{'teal' : layer._id === $store.state.currentMap.activeLayerId}"
                   :key="id._id"
-                  @click=""
+                  @click="selectLayer(layer)"
         >
-            <v-flex xs1>
-                <v-icon>directions_car</v-icon>
-            </v-flex>
-            <v-flex xs-10>
-                {{ layer.data.layerName }}
+
+            <v-flex xs-10
+                    class="aLink"
+            >
+                <div
+                >
+                    {{ layer.data.layerName }}
+                </div>
             </v-flex>
             <v-flex xs1>
                 <v-icon @click="deleteLayer(layer) ">delete</v-icon>
@@ -29,7 +33,9 @@
     components: {DialogConfirm},
     props: [],
     data() {
-      return {}
+      return {
+          name: ''
+      }
     },
     created() {
 
@@ -41,12 +47,20 @@
 
           })
         }
-      }
+      },
+      selectLayer(layer) {
+        layer.data.draggable = true
+        this.$store.dispatch('setActiveLayer', layer._id)
+      },
+
     }
   }
 </script>
 
 <style scoped>
 
+    .aLink {
+        cursor: pointer;
+    }
 
 </style>

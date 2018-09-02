@@ -11,6 +11,14 @@
 
             <v-spacer></v-spacer>
 
+            <v-btn icon to="/monitor">
+                <v-icon>fullscreen</v-icon>
+            </v-btn>
+
+            <v-btn icon to="/edit">
+                <v-icon>edit</v-icon>
+            </v-btn>
+
             <v-btn icon @click="changeTile">
                 <v-icon>map</v-icon>
             </v-btn>
@@ -19,19 +27,66 @@
                 <v-icon>cloud_download</v-icon>
             </v-btn>
 
-            <v-btn icon @click="exportLayers">
+            <v-btn icon @click="exportLayers" disabled>
                 <v-icon>import_export</v-icon>
             </v-btn>
-
-            <v-btn icon>
-                <v-icon>more_vert</v-icon>
-            </v-btn>
         </v-toolbar>
+        <div
+                v-if="$store.state.editingLayer.active"
+                class="pa-2"
+        >
+            <v-layout row align-center>
+                <v-flex xs2>
+                    <v-text-field
+                            small
+                            v-model="editLayer.name"
+                            v-on:keyup.enter=""
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs2>
+                    <v-select :items="$store.state.sectionTypes"
+                              v-model="editLayer.type"
+                              class="zTop"
+                              label="Type"/>
+                </v-flex>
+                <v-flex xs2>
+                    <v-select :items="sections"
+                              v-model="editLayer.section"
+                              class="zTop"
+                              label="Section"/>
+                </v-flex>
+                <v-flex xs4>
+                    <v-btn
+                            small
+                            color="green"
+                            @click="updateLayer"
+                    >
+                        Save
+                    </v-btn>
+                    <v-btn
+                            small
+                            color="yellow"
+                            @click="$store.dispatch('cancelAddingLayer')"
+                    >
+                        Cancel
+                    </v-btn>
+                    <v-btn
+                            small
+                            color="red"
+                            @click="deleteLayer(editLayer)"
+                    >
+                        Delete
+                    </v-btn>
+                </v-flex>
+            </v-layout>
+
+        </div>
 
         <l-map
                 :style="mapHeight"
                 ref="mainMap"
-                :zoom="14"
+                :zoom="15"
+                :maxZoom="22"
                 :center="$store.state.glasto"
                 @click="mapClick"
                 @mousemove="mouseMove"
@@ -75,13 +130,15 @@
                     :color="layer.data.colour"
                     :fillColor="layer.data.colour"
                     @click="selectLayer(layer)"
-                    :weight="1"
+                    :weight="$store.getters.strokeWeight(layer)"
             >
                 <l-tooltip
                         v-if="layer.data.points.length > 3"
                         :icontent="`<i class='fas fa-car fa-3x'></i><br />${layer.data.layerName}`"
-                        :content="`${layer.data.layerName}`"
-                        :options="tooltipOptions"></l-tooltip>
+                        :content="`<div class='tooltip-stage'>${layer.data.layerName}</div>`"
+                        :options="tooltipOptions"
+                        class="tooltip-stage"
+                ></l-tooltip>
             </l-polygon>
             <l-polyline
                     v-for="layer in $store.getters.polylines"
@@ -90,8 +147,7 @@
                     :color="layer.data.colour"
                     :fillColor="layer.data.colour"
                     @click="selectLayer(layer)"
-                    :weight="3"
-                    :iweight="layer.data.strokeWidth"
+                    :weight="$store.getters.strokeWeightPath(layer)"
             >
                 <!--
                 <l-tooltip
@@ -152,6 +208,12 @@
           lat: 51.15271479940974,
           lng: -2.6097464561462402
         },
+        editLayer: {
+          id: '',
+          name: '',
+          section: '',
+          type: ''
+        }
       }
     },
     mounted() {
@@ -163,9 +225,7 @@
     computed: {
 
       activeTileLayer() {
-
         return this.$store.state.currentMap.tileLayers[this.$store.state.currentMap.activeTile]
-
       },
       icon() {
         return L.icon({
@@ -178,7 +238,18 @@
         let windowHeight = window.innerHeight
         return `height: ${windowHeight}px`
       },
+      sections() {
+        let sectionArray = []
+        this.$store.state.sections.map((section, idx) => {
+          sectionArray.push({
+            value: idx,
+            text: section.name
+          })
+        })
+        return sectionArray
+      }
     },
+    getters: {},
     methods: {
       iconFromUrl(iconUrl) {
         return L.icon({
@@ -198,7 +269,13 @@
       },
       selectLayer(layer) {
         layer.data.draggable = true
-        this.$store.dispatch('setActiveLayer', layer._id)
+        this.editLayer.name = layer.data.layerName
+        this.$store.dispatch('setActiveLayer', layer._id).then(() => {
+          console.log('Select drop down', layer.data.section)
+          this.editLayer.id = layer._id
+          this.editLayer.section = layer.data.section
+          this.editLayer.type = layer.data.type
+        })
       },
       undoPoint(event) {
         this.$store.dispatch('undoPointToLayer', event.latlng)
@@ -215,6 +292,25 @@
                 this.$store.dispatch('addPointToLayer', event.latlng)
                 break
             }
+        }
+      },
+      updateLayer() {
+        let layerData = {
+          _id: this.$store.state.currentMap.activeLayerId,
+          name: this.editLayer.name,
+          section: this.editLayer.section,
+          type: this.editLayer.type
+        }
+        this.$store.dispatch('updateLayer', layerData)
+      },
+      deleteLayer() {
+        if (confirm('Really?')) {
+          console.log('Ok delete',this.editLayer.id)
+
+          let layerData = {
+            id: this.editLayer.id
+          }
+          this.$store.dispatch('deleteLayer', layerData)
         }
       },
       mouseMove(event) {
@@ -250,7 +346,9 @@
         link.click()
         link.remove()
       },
-      exportLayers(){
+      exportLayers() {
+        alert('Disabled')
+        return
         this.$store.state.currentMap.layers.map(layer => {
           console.log('Exporting Layer', layer.data)
           axios.post('http://localhost:6969/layer', layer.data).then(response => {
@@ -286,8 +384,18 @@
         box-shadow: none;
     }
 
+    .tooltip-stage {
+        color: #536DFE;
+        padding: 5px;
+        border-radius: 25px;
+    }
+
     .crosshair-cursor-enabled {
         cursor: crosshair;
+    }
+
+    .zTop {
+        z-index: 1000;
     }
 
     .markerLabel {

@@ -20,21 +20,17 @@
                 </v-flex>
             </v-layout>
         </v-container>
-
-        <v-layout row wrap>
-            <v-flex xs3>
-
-                <v-chip
-                        v-for="(colour, idx) in $store.state.colourPresets"
-                        :key="idx"
-                        small
-                        :color="colour"
-                        text-color="white"
-                        @click="selectColor(colour)"
-                >{{ colour }}
-                </v-chip>
-            </v-flex>
-        </v-layout>
+        <div class="mb-4 mt-4">
+            <v-chip
+                    v-for="(colour, idx) in $store.state.colourPresets"
+                    :key="idx"
+                    small
+                    :color="colour"
+                    text-color="white"
+                    @click="selectColor(colour)"
+            >{{ colour }}
+            </v-chip>
+        </div>
         <v-card>
             <v-layout class="pa-2 text-xs-center" align-center>
                 <v-flex xs5>

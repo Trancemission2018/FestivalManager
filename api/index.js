@@ -8,8 +8,6 @@ const cors = require('cors')
 const dbUrl = 'mongodb://localhost:27017'
 const dbName = 'festivalmanager'
 
-const PORTAL_URL = 'https://development.portal.uk'
-
 const app = express()
 app.use(cors())
 
@@ -27,7 +25,7 @@ MongoClient.connect(dbUrl, function (err, client) {
 
   app.post('/layers/import', (req, res) => {
     req.body.layers.map(layer => {
-      db.collection('layers').insert({data:layer.data})
+      db.collection('layers').insert({data: layer.data})
     })
   })
 
@@ -41,10 +39,27 @@ MongoClient.connect(dbUrl, function (err, client) {
     res.json(req.body)
   })
 
+  app.put('/layer', (req, res) => {
+    console.log('Updating Layer')
+    db.collection('layers').update({_id: new ObjectID(req.body._id)},
+        {
+          $set: {
+            'data.layerName': req.body.name,
+            'data.type': req.body.type,
+            'data.section': req.body.section
+          }
+        }
+    ).then(response => {
+      res.json(response)
+    }).catch(error => res.status(503).json(error))
+  })
+
 
   app.delete('/layer/:layerId', (req, res) => {
     console.log('Going to rmeove', req.params.layerId)
-    db.collection('layers').remove({_id: new ObjectID(req.params.layerId)})
+    db.collection('layers').remove(
+        {_id: new ObjectID(req.params.layerId)}
+    )
         .then(result => res.json(result))
         .catch(error => res.status(503).json(error))
   })

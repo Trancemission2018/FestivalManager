@@ -38,6 +38,9 @@ export default {
     strokeWidth: 3,
     draggable: false
   },
+  editingLayer: {
+    active: false
+  },
   layerTypes: [
     {
       id: 1,
@@ -123,6 +126,37 @@ export default {
     },
   ],
   activeSection: 0,
+  sectionTypes: [
+     {
+      value: 'car_park',
+      text: 'Car Park'
+    },
+    {
+      value: 'pedestrian_route',
+      text: 'Pedestrian Route'
+    },
+    {
+      value: 'public_camping',
+      text: 'Public Camping'
+    },
+    {
+      value: 'crew_camping',
+      text: 'Crew Camping'
+    },
+
+    {
+      value: 'stage',
+      text: 'Stage'
+    },
+    {
+      value: 'po_public',
+      text: 'No Public Access'
+    },
+    {
+      value: 'out_of_bounds',
+      text: 'Out Of Bounds'
+    },
+  ],
   mapIcons: [
     {
       name: 'Stage',
@@ -136,7 +170,14 @@ export default {
       name: 'Car',
       url: '/static/icons/car-entrance.svg'
     },
+    {
+      name: 'Pint',
+      url: '/static/icons/pint.svg'
+    },
+    {
+      name: 'Blank',
+      url: '/static/icons/blank.png'
+    },
   ],
-  colourPresets: [
-  ]
+  colourPresets: []
 }

@@ -1,10 +1,10 @@
 <template>
     <div fluid>
         <v-layout>
-            <v-flex xs8 class="text-xs-center">
+            <v-flex xs8 class="tex-xs-center">
                 <main-map/>
             </v-flex>
-            <v-flex class="pa-2">
+            <v-flex xs4 class="pa-2">
                 <v-tabs
                         v-model="activeTab"
                         light
@@ -67,3 +67,9 @@
     }
   }
 </script>
+
+<style>
+    .aLink {
+        cursor: pointer;
+    }
+</style>
