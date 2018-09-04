@@ -116,7 +116,8 @@ export default {
       ]
     },
     {
-      name: 'Electricity'
+      name: 'Infrastructure',
+      component: 'infrastructure'
     },
     {
       name: 'Stages'

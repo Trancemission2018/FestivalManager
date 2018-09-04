@@ -4,33 +4,6 @@
             v-on:keyup.esc="undoPoint"
     >
 
-        <v-toolbar light>
-            <v-toolbar-side-icon></v-toolbar-side-icon>
-
-            <v-toolbar-title class="black--text">Festival Manager</v-toolbar-title>
-
-            <v-spacer></v-spacer>
-
-            <v-btn icon to="/monitor">
-                <v-icon>fullscreen</v-icon>
-            </v-btn>
-
-            <v-btn icon to="/edit">
-                <v-icon>edit</v-icon>
-            </v-btn>
-
-            <v-btn icon @click="changeTile">
-                <v-icon>map</v-icon>
-            </v-btn>
-
-            <v-btn icon @click="downloadData">
-                <v-icon>cloud_download</v-icon>
-            </v-btn>
-
-            <v-btn icon @click="exportLayers" disabled>
-                <v-icon>import_export</v-icon>
-            </v-btn>
-        </v-toolbar>
         <div
                 v-if="$store.state.editingLayer.active"
                 class="pa-2"

@@ -1,7 +1,35 @@
 <template>
     <div fluid>
+
+        <v-toolbar light>
+            <v-toolbar-side-icon></v-toolbar-side-icon>
+
+            <v-toolbar-title class="black--text">Festival Manager</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+
+            <v-btn icon to="/monitor">
+                <v-icon>fullscreen</v-icon>
+            </v-btn>
+
+            <v-btn icon to="/edit">
+                <v-icon>edit</v-icon>
+            </v-btn>
+
+            <v-btn icon @click="changeTile">
+                <v-icon>map</v-icon>
+            </v-btn>
+
+            <v-btn icon @click="downloadData">
+                <v-icon>cloud_download</v-icon>
+            </v-btn>
+
+            <v-btn icon @click="exportLayers" disabled>
+                <v-icon>import_export</v-icon>
+            </v-btn>
+        </v-toolbar>
         <v-layout>
-            <v-flex xs8 class="tex-xs-center">
+            <v-flex xs8 class="tex-xs-center pt-2">
                 <main-map/>
             </v-flex>
             <v-flex xs4 class="pa-2">
@@ -29,10 +57,11 @@
     </div>
 </template>
 <script>
+  import MainMap from "./widgets/MainMap"
   import Security from './views/Security'
   import Traffic from './views/Traffic'
   import Camping from './views/Camping.vue'
-  import MainMap from "./widgets/MainMap"
+  import Infrastructure from './views/Infrastructure'
 
   export default {
     name: 'example',
@@ -40,7 +69,8 @@
       MainMap,
       Security,
       Traffic,
-      Camping
+      Camping,
+      Infrastructure
     },
     data: () => ({
       activeTab: null,
