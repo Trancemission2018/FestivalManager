@@ -3,6 +3,19 @@
     <div
             v-on:keyup.esc="undoPoint"
     >
+        <v-tabs
+                v-model="activeTab"
+                light
+                slider-color="teal"
+        >
+            <v-tab
+                    v-for="section in $store.state.sections"
+                    :key="section.name"
+                    :ripple="false"
+            >
+                {{ section.name }}
+            </v-tab>
+        </v-tabs>
 
         <div
                 v-if="$store.state.editingLayer.active"
@@ -63,6 +76,7 @@
                 :center="$store.state.glasto"
                 @click="mapClick"
                 @mousemove="mouseMove"
+                :editable="true"
         >
 
             <l-tile-layer :url="activeTileLayer"></l-tile-layer>
@@ -96,6 +110,7 @@
                         :options="tooltipOptions"></l-tooltip>
             </l-marker>
 
+            <!--
             <l-polygon
                     v-for="layer in $store.getters.polygons"
                     :key="layer._id"
@@ -104,6 +119,7 @@
                     :fillColor="layer.data.colour"
                     @click="selectLayer(layer)"
                     :weight="$store.getters.strokeWeight(layer)"
+                    :draggable="true"
             >
                 <l-tooltip
                         v-if="layer.data.points.length > 3"
@@ -127,8 +143,8 @@
                         v-if="layer.data.points.length > 2"
                         :content="layer.data.layerName"
                         :options="tooltipOptions"></l-tooltip>
-                        -->
             </l-polyline>
+                        -->
 
             <l-marker
                     v-for="layer in $store.getters.markers"
@@ -144,14 +160,28 @@
                         :options="tooltipOptions"></l-tooltip>
             </l-marker>
 
+
         </l-map>
     </div>
 
 </template>
 <script>
 
-  import {LMap, LTileLayer, LMarker, LPolyline, LPolygon, LTooltip, LPopup, LIconDefault} from 'vue2-leaflet'
-  import axios from 'axios'
+  require('leaflet-hotline/dist/leaflet.hotline')
+  require('leaflet.path.drag')
+  require('../../Leaflet.Editable')
+
+  import {
+    LMap,
+    LTileLayer,
+    LMarker,
+    LPolyline,
+    LPolygon,
+    LTooltip,
+    LPopup,
+    LIconDefault,
+    LCircleMarker
+  } from 'vue2-leaflet'
 
   export default {
     name: "main-map",
@@ -163,7 +193,8 @@
       LPolygon,
       LTooltip,
       LPopup,
-      LIconDefault
+      LIconDefault,
+      LCircleMarker
     },
     props: [],
     data() {
@@ -172,6 +203,7 @@
           permanent: true,
           direction: 'center',
         },
+        activeTab: 0,
         addedMarker: false,
         glasto: {
           lat: 51.15271479940974,
@@ -181,6 +213,57 @@
           lat: 51.15271479940974,
           lng: -2.6097464561462402
         },
+        "hotline": [
+          [
+            51.149499607732,
+            -2.5778259311664153,
+            0
+          ],
+          [51.15088093939987,
+            -2.576794012616706,
+            15
+          ],
+          [51.15103572673043,
+            -2.5767189304888305,
+            25
+          ],
+          [51.15125781199356,
+            -2.5763381568402592,
+            37
+          ],
+          [51.15139240860256,
+            -2.576268437721521,
+            10
+          ],
+          [51.15150345050945,
+            -2.576322067812869,
+            50
+          ],
+          [51.151698614425555,
+            -2.576418601977291,
+            65
+          ],
+          [51.1517659121363,
+            -2.5765312251691235,
+            100
+          ],
+          [51.15186685851837,
+            -2.5775823749595133,
+            58
+          ],
+          [51.15192742624161,
+            -2.5778290733797053,
+            40
+          ],
+          [51.15223026366542,
+            -2.5787032438686412,
+            20
+          ],
+          [51.152324479347506,
+            -2.578837319097021,
+            10
+          ]
+        ],
         editLayer: {
           id: '',
           name: '',
@@ -190,13 +273,44 @@
       }
     },
     mounted() {
+      L.hotline(this.hotline, {min: 1, max: 100, weight: 5, outlineWidth: 0}).addTo(this.$refs.mainMap.mapObject)
       this.loadLayers().then(() => {
-        this.$refs.mainMap.mapObject.eachLayer(layer => {
+        this.$store.getters.polygons.map(polyData => {
+          let thisPoly = []
+          polyData.data.points.map(point => {
+            thisPoly.push([
+              point.lat,
+              point.lng
+            ])
+          })
+          let thisLayer = L.polygon(thisPoly, {
+            color: polyData.data.colour
+          }).addTo(this.$refs.mainMap.mapObject, {draggable: true})
+              .addTo(this.$refs.mainMap.mapObject)
+          thisLayer.id = polyData._id
+          thisLayer.on('dragend', this.dragPolyEnd)
+          thisLayer.on('dragstart', this.dragPolyStart)
+          thisLayer.on('drag', this.draggingPoly)
+          thisLayer.on('click', this.layerClick)
+          this.$store.dispatch('addLayerToMap', thisLayer)
         })
       })
+      this.$store.state.mappedLayers.forEach(layer => {
+        let weight = 0
+        setInterval(() => {
+          layer.setStyle({
+            weight: weight
+          })
+        })
+        if (weight <= 7) {
+          weight++
+        } else if (weight === 8) {
+          weight--
+        }
+      }, 100)
+
     },
     computed: {
-
       activeTileLayer() {
         return this.$store.state.currentMap.tileLayers[this.$store.state.currentMap.activeTile]
       },
@@ -231,15 +345,6 @@
           iconAnchor: [20, 20]
         })
       },
-      changeTile() {
-
-        if (this.$store.state.currentMap.activeTile === this.$store.state.currentMap.tileLayers.length - 1) {
-          this.$store.commit('SET_TILE_LAYER', 0)
-        } else {
-          let layer = this.$store.state.currentMap.activeTile + 1
-          this.$store.commit('SET_TILE_LAYER', layer)
-        }
-      },
       selectLayer(layer) {
         layer.data.draggable = true
         this.editLayer.name = layer.data.layerName
@@ -267,6 +372,22 @@
             }
         }
       },
+      layerClick(layer) {
+        this.$store.state.mappedLayers.map(layer => {
+          layer.dragging.disable() // And also reset the color?
+          layer.setStyle({
+            color: 'green'
+          })
+        })
+        if (layer.originalEvent.ctrlKey) {
+          alert("ctr key was pressed during the click")
+        }
+        console.log('Layer id', layer.target.id)
+        layer.target.setStyle({color: 'red'})
+        layer.target.dragging.enable()
+        layer.target.enableEdit()
+
+      },
       updateLayer() {
         let layerData = {
           _id: this.$store.state.currentMap.activeLayerId,
@@ -276,9 +397,18 @@
         }
         this.$store.dispatch('updateLayer', layerData)
       },
+      dragPolyEnd(ev) {
+        console.log('Done dragging?', ev)
+      },
+      dragPolyStart(ev) {
+        console.log('Start dragging?', ev)
+      },
+      draggingPoly(ev) {
+        console.log('Are dragging?', ev)
+      },
       deleteLayer() {
         if (confirm('Really?')) {
-          console.log('Ok delete',this.editLayer.id)
+          console.log('Ok delete', this.editLayer.id)
 
           let layerData = {
             id: this.editLayer.id
@@ -305,32 +435,17 @@
           }
         }
       },
+      getRandomColor() {
+        var letters = '0123456789ABCDEF'
+        var color = '#'
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)]
+        }
+        return color
+      },
       dragEnd(e) {
         this.$store.dispatch('setMarkerPoint', e.target._latlng)
       },
-      downloadData() {
-        let dataStr = JSON.stringify(this.$store.state)
-        let encodedUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
-        let link = document.createElement("a")
-        link.setAttribute("href", encodedUri)
-        link.setAttribute("download", "data.json")
-        link.innerHTML = "Click Here to download"
-        document.body.appendChild(link) // Required for FF
-        link.click()
-        link.remove()
-      },
-      exportLayers() {
-        alert('Disabled')
-        return
-        this.$store.state.currentMap.layers.map(layer => {
-          console.log('Exporting Layer', layer.data)
-          axios.post('http://localhost:6969/layer', layer.data).then(response => {
-            console.log('Saved layer', response)
-          })
-
-        })
-
-      }
     },
     watch: {
       '$store.state.addingLayer.active'() {

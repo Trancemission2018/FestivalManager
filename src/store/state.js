@@ -19,6 +19,7 @@ export default {
     layers: [],
     activeLayerId: '',
   },
+  mappedLayers: [],
   glasto: {
     lat: 51.15271479940974,
     lng: -2.6097464561462402

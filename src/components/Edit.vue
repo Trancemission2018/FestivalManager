@@ -23,13 +23,9 @@
             <v-btn icon @click="downloadData">
                 <v-icon>cloud_download</v-icon>
             </v-btn>
-
-            <v-btn icon @click="exportLayers" disabled>
-                <v-icon>import_export</v-icon>
-            </v-btn>
         </v-toolbar>
         <v-layout>
-            <v-flex xs8 class="tex-xs-center pt-2">
+            <v-flex xs8 class="pt-2">
                 <main-map/>
             </v-flex>
             <v-flex xs4 class="pa-2">
@@ -93,7 +89,26 @@
         this.$refs.mainMap.mapObject.eachLayer(layer => {
           console.log('Please save this layer', layer)
         })
-      }
+      },
+      changeTile() {
+        if (this.$store.state.currentMap.activeTile === this.$store.state.currentMap.tileLayers.length - 1) {
+          this.$store.commit('SET_TILE_LAYER', 0)
+        } else {
+          let layer = this.$store.state.currentMap.activeTile + 1
+          this.$store.commit('SET_TILE_LAYER', layer)
+        }
+      },
+      downloadData() {
+        let dataStr = JSON.stringify(this.$store.state)
+        let encodedUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr)
+        let link = document.createElement("a")
+        link.setAttribute("href", encodedUri)
+        link.setAttribute("download", "data.json")
+        link.innerHTML = "Click Here to download"
+        document.body.appendChild(link) // Required for FF
+        link.click()
+        link.remove()
+      },
     }
   }
 </script>

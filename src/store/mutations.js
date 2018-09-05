@@ -54,6 +54,9 @@ export default {
   ADD_LAYERS_TO_MAP(state, layers) {
     state.currentMap.layers = layers
   },
+  ADD_LAYER_TO_MAP(state, layer) {
+    state.mappedLayers.push(layer)
+  },
   SET_PRESET_COLOURS(state, colours) {
     state.colourPresets = (colours)
   },
